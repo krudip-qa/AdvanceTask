@@ -24,9 +24,8 @@ namespace InternProject3.Acceptence_Test.StepDefinition.ProfileSteps
         [Given(@"I click on skill tab under profile")]
         public void GivenIClickOnSkillTabUnderProfile()
         {
-            Thread.Sleep(2000);
-            //click on a Skill Tab
-            _driver.FindElement(By.XPath(".//a[@data-tab='second']")).Click();
+            skillObj = new Skill(_driver);
+            skillObj.ClickSkillTab(_driver);
         }
         
         [Given(@"I Add skill")]

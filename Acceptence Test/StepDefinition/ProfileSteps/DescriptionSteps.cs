@@ -19,12 +19,12 @@ namespace InternProject3.Acceptence_Test.StepDefinition.ProfileSteps
 
         //Description
         Description DescriptionObj;
+
         [Given(@"I should click on pen button beside Description")]
         public void GivenIShouldClickOnPenButtonBesideDescription()
         {
-            Sync.WaitforVisibility(_driver, "XPath", ".//*[@class='ui fluid card']/div/div[1]/h3/span/i", 10);
-            //click on a pen button to write text in Description
-            _driver.FindElement(By.XPath(".//*[@class='ui fluid card']/div/div[1]/h3/span/i")).Click();
+            DescriptionObj = new Description(_driver);
+            DescriptionObj.ClickDescription(_driver);
         }      
 
         [When(@"I Enter details")]

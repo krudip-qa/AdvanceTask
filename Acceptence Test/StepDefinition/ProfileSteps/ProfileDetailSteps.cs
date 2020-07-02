@@ -26,11 +26,12 @@ namespace InternProject3.Acceptence_Test.StepDefinition
         [When(@"I View name")]
         public void WhenIViewName()
         {
-            DetailObj = new ProfileDetail(_driver);
             //Call an object
             //ProfileDetail - NameTitle
-            DetailObj.NameTitle(GlobalDriver.driver);
+            DetailObj = new ProfileDetail(_driver);
+            DetailObj.NameTitle(_driver);
         }
+
         [Then(@"It Should has first name and last name")]
         public void ThenItShouldHasFirstNameAndLastName()
         {

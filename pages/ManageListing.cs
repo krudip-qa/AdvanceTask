@@ -19,6 +19,28 @@ namespace InternProject3.pages
             _driver = driver;
         }
 
+        #region
+
+        protected IWebElement ManageListingTab => _driver.FindElement(By.LinkText("Manage Listings"));
+        protected IWebElement ViewIcon => _driver.FindElement(By.XPath("(//i[@class='eye icon'])[1]"));
+        protected IWebElement EditIcon => _driver.FindElement(By.XPath("(//i[@class='outline write icon'])[1]"));
+        protected IWebElement DeleteIcon => _driver.FindElement(By.XPath("(//i[@class='remove icon'])[1]"));
+        protected IWebElement YesButton => _driver.FindElement(By.XPath("//div[@class='actions']/button[2]"));
+        protected IWebElement PopUpMessage => _driver.FindElement(By.ClassName("ns-box-inner"));
+        protected IWebElement PopUpClose => _driver.FindElement(By.ClassName("ns-close"));
+        
+        #endregion
+
+        //Click on ManageListing tab
+        public void ClickManageListingTab(IWebDriver driver)
+        {
+            //wait
+            Sync.WaitforVisibility(_driver, "LinkText", "Manage Listings", 20);
+
+            //Click on manage listing TAb
+            _driver.FindElement(By.LinkText("Manage Listings")).Click();
+        }
+
         //View manage listing 
         public void View(IWebDriver driver)
         {            
@@ -26,9 +48,17 @@ namespace InternProject3.pages
             Sync.WaitforVisibility(driver, "XPath", "(//i[@class='eye icon'])[1]", 10);
            
             //Click on View at manage listing Tab
-            driver.FindElement(By.XPath("(//i[@class='eye icon'])[1]")).Click();
+            ViewIcon.Click();
         }
         
+        //Click on EditIcon
+        public void Edit(IWebDriver driver)
+        {
+            Sync.WaitforVisibility(_driver, "XPath", "(//i[@class='outline write icon'])[1]", 10);
+            //CLick on Edit button 
+            EditIcon.Click();
+        }
+      
         //validate View
         public void ValidateView(IWebDriver driver)
         {
@@ -68,13 +98,13 @@ namespace InternProject3.pages
         {
             Sync.WaitforVisibility(driver, "XPath", "(//i[@class='remove icon'])[1]", 20);
             //Click on Delete button
-            driver.FindElement(By.XPath("(//i[@class='remove icon'])[1]")).Click();
+            DeleteIcon.Click();
 
             //Wait untill Driver finds pop up YES or NO button to click
             Sync.WaitforVisibility(driver, "XPath", "//div[@class='actions']/button[2]", 2);
 
             //Click on Yes or No button
-            driver.FindElement(By.XPath("//div[@class='actions']/button[2]")).Click();
+            YesButton.Click();
         }
         // Validate - Delete in manage listsing
         public void ValidateDeleteManageList(IWebDriver driver)

@@ -22,27 +22,70 @@ namespace InternProject3.pages.Profile
         {
             _driver = driver;
         }
+        #region Initialise WebElememt for Profile Name 
+        protected IWebElement NameDropDown => _driver.FindElement(By.XPath(".//div[@class='title']/i"));
+        protected IWebElement FirstName => _driver.FindElement(By.XPath(".//input[@name='firstName']"));
+        protected IWebElement LastName => _driver.FindElement(By.XPath(".//input[@name='lastName']"));
+        protected IWebElement SaveButton => _driver.FindElement(By.XPath(".//button[@class='ui teal button']"));
+        protected IWebElement GetNameTitle => _driver.FindElement(By.XPath(".//div[@class='title']"));
+
+        #endregion
+
+        #region Initialise WebElemet for Availability
+
+        protected IWebElement PenIconforAvailability => _driver.FindElement(By.XPath(".//div[@class='ui list']/div[2]/div/span/i"));
+        protected IWebElement DropDownArrow => _driver.FindElement(By.Name("availabiltyType"));
+        protected IWebElement AvailabilityTypes => _driver.FindElement(By.Name("availabiltyType"));
+
+        #endregion
+
+        #region Initialise WebElement for Hours
+
+        protected IWebElement HourPenIcon => _driver.FindElement(By.XPath(".//div[@class='ui list']/div[3]/div/span/i"));
+        protected IWebElement HourDropDown => _driver.FindElement(By.Name("availabiltyHour"));
+
+        #endregion
+
+        #region Initialise WebElements for EarnTarget
+        
+        protected IWebElement EarnTargetPenIcon => _driver.FindElement(By.XPath(".//*[@class='ui list']/div[4]/div/span/i"));
+        protected IWebElement EarntargetDropDown => _driver.FindElement(By.Name("availabiltyTarget"));
+        protected IWebElement EarnType => _driver.FindElement(By.Name("availabiltyTarget"));
+
+        #endregion
+
+        #region Initialise WebElements for validation
+        protected IWebElement PopUpMessage => _driver.FindElement(By.ClassName("ns-box-inner"));
+        protected IWebElement PopUpClose => _driver.FindElement(By.ClassName("ns-close"));
+        #endregion
+
         //Function for Name Title
         public void NameTitle(IWebDriver driver)
         {
             //Populate ExcelLibHelper
             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileDetail");
+                        
             Sync.WaitforVisibility(driver, "XPath", ".//div[@class='title']/i", 10);
             // Click on Drop - Down button to enter name Details
-            driver.FindElement(By.XPath(".//div[@class='title']/i")).Click();
+            NameDropDown.Click();
+            
             //Enter first Name 
             Sync.WaitforVisibility(driver, "XPath", ".//input[@name='firstName']", 10);
+            
             //CLear FirstName Text Field 
-            driver.FindElement(By.XPath(".//input[@name='firstName']")).Clear();
-            driver.FindElement(By.XPath(".//input[@name='firstName']")).SendKeys(ExcelLibHelpers.ReadData(2, "FirstName"));
+            FirstName.Clear();
+            FirstName.SendKeys(ExcelLibHelpers.ReadData(2, "FirstName"));
+            
             //Enter Last Name 
             //CLear lastName Text Field 
-            driver.FindElement(By.XPath(".//input[@name='lastName']")).Clear();
-            driver.FindElement(By.XPath(".//input[@name='lastName']")).SendKeys(ExcelLibHelpers.ReadData(2, "LastName"));
+            LastName.Clear();
+            LastName.SendKeys(ExcelLibHelpers.ReadData(2, "LastName"));
+            
             //Click on SAVE button 
-            driver.FindElement(By.XPath(".//button[@class='ui teal button']")).Click();
+            SaveButton.Click();
 
         }
+        
         //Validation for name 
         public void ValidateName(IWebDriver driver)
         {
@@ -51,7 +94,7 @@ namespace InternProject3.pages.Profile
              ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileDetail");
             Sync.WaitforVisibility(driver, "XPath", ".//div[@class='title']", 30);
             //Assert - get the name from title and match with provided details
-            string Actual = driver.FindElement(By.XPath(".//div[@class='title']")).Text;
+            string Actual = GetNameTitle.Text;
             string expected = ExcelLibHelpers.ReadData(2, "Name Title");
                     
             try
@@ -64,26 +107,34 @@ namespace InternProject3.pages.Profile
                 Console.WriteLine(e.Message);
             }
         }
-
+        
         //Function for Availability
         public void Availability(IWebDriver driver)
         {
             //Populate ExcelLibHelper
             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileDetail");
+            
+            //Wait for Icon to be found
             Sync.WaitforVisibility(driver, "XPath", ".//div[@class='ui list']/div[2]/div/span/i", 10);
+            
             //click on pen button to Select Availability from part time or full time
-            driver.FindElement(By.XPath(".//div[@class='ui list']/div[2]/div/span/i")).Click();
+            PenIconforAvailability.Click();
+            
             //click on Drp-Down Arrow // Xpath - .//select[@name="availabiltyType"]
-            driver.FindElement(By.Name("availabiltyType")).Click();
-            IWebElement Availability = driver.FindElement(By.Name("availabiltyType"));
+            DropDownArrow.Click();           
+            
             Thread.Sleep(1000);
+            
             Actions actions = new Actions(driver);
-            actions.MoveToElement(Availability).Build().Perform();
+            actions.MoveToElement(AvailabilityTypes).Build().Perform();
+            
             Sync.WaitforVisibility(driver, "TagName", "option", 20);
-            IList<IWebElement> HourList = Availability.FindElements(By.TagName("option"));
+            IList<IWebElement> HourList = AvailabilityTypes.FindElements(By.TagName("option"));
+            
             //String AvaibilityType = driver.FindElement(By.Name("availabiltyType")).Text;
             int Count = HourList.Count();
             Boolean result = true;
+            
             try
             {
                 for (int i = 1; i <= Count; i++)
@@ -110,22 +161,28 @@ namespace InternProject3.pages.Profile
         {
             //Populate ExcelLibHelper
             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileDetail");
+           
             Sync.WaitforVisibility(driver, "XPath", ".//div[@class='ui list']/div[3]/div/span/i", 10);
             //click on Pen button to Edit
-            driver.FindElement(By.XPath(".//div[@class='ui list']/div[3]/div/span/i")).Click();
+            HourPenIcon.Click();
+            
             //Click on Drop-Down 
-            driver.FindElement(By.Name("availabiltyHour")).Click();
+            HourDropDown.Click();
+            
             //Save Hour WebElemets into Element variable
-            IWebElement AvailableHour = driver.FindElement(By.Name("availabiltyHour"));
             Thread.Sleep(1000);
             Actions actions = new Actions(driver);
-            actions.MoveToElement(AvailableHour).Build().Perform();
+            actions.MoveToElement(HourDropDown).Build().Perform();
+            
             Sync.WaitforVisibility(driver, "TagName", "option", 10);
+            
             //List the Hours options using tagname "option" - It suppose to be 4 
-            IList<IWebElement> HourList = AvailableHour.FindElements(By.TagName("option"));
+            IList<IWebElement> HourList = HourDropDown.FindElements(By.TagName("option"));
             Boolean result = true;
+            
             //Conver Listed Hours into size  
             int Count = HourList.Count();
+            
             //Using for loop iterate all option
             for (int i = 1; i < Count; i++)
             {
@@ -146,23 +203,29 @@ namespace InternProject3.pages.Profile
         //Function for Earn Target
         public void EarnTarget(IWebDriver driver)
         {
-
             Sync.WaitforVisibility(driver, "XPath", ".//*[@class='ui list']/div[4]/div/span/i", 10);
+            
             //Populate ExcelLibHelper
             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileDetail");
+            
             //Click on pen button to Edit data
-            driver.FindElement(By.XPath(".//*[@class='ui list']/div[4]/div/span/i")).Click();
+            EarnTargetPenIcon.Click();
+            
             //Click on Drop-Down button
-            driver.FindElement(By.Name("availabiltyTarget")).Click();
-            IWebElement EarnType = driver.FindElement(By.Name("availabiltyTarget"));
+            EarntargetDropDown.Click();
+             
             Thread.Sleep(1000);
+            
             Actions actions = new Actions(driver);
             actions.MoveToElement(EarnType).Build().Perform();
+            
             Sync.WaitforVisibility(driver, "TagName", "option", 10);
             //List the Hours options using tagname "option" - It suppose to be 4 
             IList<IWebElement> EarnList = EarnType.FindElements(By.TagName("option"));
+            
             Boolean result = true;
             int Count = EarnList.Count();
+            
             for(int i = 1; i < Count; i++)
             {
                 //Console.WriteLine(EarnList[i].Text);

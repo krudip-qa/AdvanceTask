@@ -23,10 +23,8 @@ namespace InternProject3
         [Given(@"I should able to click on Education tab under profile")]
         public void GivenIShouldAbleToClickOnEducationTabUnderProfile()
         {
-            //wait
-            Sync.WaitforVisibility(_driver, "XPath", "//a[@data-tab='third']", 10);
-            //click on Education tab
-            _driver.FindElement(By.XPath("//a[@data-tab='third']")).Click();
+            EduObj = new Education(_driver);
+            EduObj.Educationtab(_driver);
         }
         
         [When(@"I add education")]

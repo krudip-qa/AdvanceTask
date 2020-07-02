@@ -15,19 +15,13 @@ namespace InternProject3.Acceptence_Test.StepDefinition
         public ManageListingSteps(IWebDriver driver)
         {
             _driver = driver;
-        }
-
-       
+        }       
 
         [Given(@"I have click on manage listing tab")]
         public void GivenIHaveClickOnManageListingTab()
         {
-            //scenarioContext.Set("Delete", "managelisting");
-             //wait
-            Sync.WaitforVisibility(_driver, "LinkText", "Manage Listings", 20);
-            
-            //Click on manage listing TAb
-            _driver.FindElement(By.LinkText("Manage Listings")).Click();
+            ManageListing ListingObj = new ManageListing(_driver);
+            ListingObj.ClickManageListingTab(_driver);
 
         }
         [When(@"I view manage listing")]
@@ -47,10 +41,8 @@ namespace InternProject3.Acceptence_Test.StepDefinition
         [Given(@"I Edit manage listing")]
         public void GivenIEditManageListing()
         {
-            Sync.WaitforVisibility(_driver, "XPath", "(//i[@class='outline write icon'])[1]", 10);
-            //CLick on Edit button 
-            _driver.FindElement(By.XPath("(//i[@class='outline write icon'])[1]")).Click();
-
+            ManageListing ListingObj = new ManageListing(_driver);
+            ListingObj.Edit(_driver);
         }
 
         [Then(@"I should able to navigate to Service listing page")]

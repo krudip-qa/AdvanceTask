@@ -23,12 +23,9 @@ namespace InternProject3.Acceptence_Test.StepDefinition
 
         [Given(@"I click on share skill tab")]
         public void GivenIClickOnShareSkillTab()
-        {           
-            //wait untill driver find share skill tab
-            Sync.WaitforVisibility(_driver, "LinkText", "Share Skill", 10);
-            //Click on share skill tab
-            _driver.FindElement(By.LinkText("Share Skill")).Click();
-
+        {
+            ShareSkillObj = new ShareSkill(_driver);
+            ShareSkillObj.ClickShareskill(_driver);
         }
 
         [When(@"I Enter share skill")]

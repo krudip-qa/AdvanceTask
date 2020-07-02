@@ -19,17 +19,39 @@ namespace InternProject3.pages.Profile
         {
             _driver = driver;
         }
+
+        #region Initialise Description WebElements
+        protected IWebElement DescriptionPenIcon => _driver.FindElement(By.XPath(".//*[@class='ui fluid card']/div/div[1]/h3/span/i"));
+        protected IWebElement DescriptionTextArea => _driver.FindElement(By.XPath(".//textarea[@name='value']"));
+        protected IWebElement DescriptionText => _driver.FindElement(By.Name("value"));
+        protected IWebElement SaveButton => _driver.FindElement(By.XPath(".//button[@type='button']"));
+
+
+
+        #endregion
+
+        public void ClickDescription(IWebDriver driver)
+        {
+            Sync.WaitforVisibility(_driver, "XPath", ".//*[@class='ui fluid card']/div/div[1]/h3/span/i", 10);
+           
+            //click on a pen button to write text in Description
+            DescriptionPenIcon.Click();
+        }
+
         //Add Description
         public void ProfileDescription(IWebDriver driver)
         {
             //Populate ExcelLibHelper
             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileDescription");
+           
             //clear the text 
-            driver.FindElement(By.XPath(".//textarea[@name='value']")).Clear();
+            DescriptionTextArea.Clear();
+            
             //write into textbox
-            driver.FindElement(By.Name("value")).SendKeys(ExcelLibHelpers.ReadData(2, "Description"));
+            DescriptionText.SendKeys(ExcelLibHelpers.ReadData(2, "Description"));
+            
             //click on  Save button 
-            driver.FindElement(By.XPath(".//button[@type='button']")).Click();
+            SaveButton.Click();
            
         }
 
@@ -38,10 +60,13 @@ namespace InternProject3.pages.Profile
         {
             //Populate ExcelLibHelper
             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileDescription");
+           
             //Get value from excel
             string ExpectedValue = ExcelLibHelpers.ReadData(2, "Description");
+            
             //Get the text from Description text field
-            String ActualValue = driver.FindElement(By.Name("value")).Text;
+            String ActualValue = DescriptionText.Text;
+            
             //Compair Excel text and Description text 
             try
             {
@@ -61,12 +86,15 @@ namespace InternProject3.pages.Profile
         {
             //Populate ExcelLibHelper
             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileDescription");
+            
             //clear the text 
-            driver.FindElement(By.XPath(".//textarea[@name='value']")).Clear();
+            DescriptionTextArea.Clear();
+            
             //write into textbox
-            driver.FindElement(By.Name("value")).SendKeys(ExcelLibHelpers.ReadData(2, "Edit Description"));
+            DescriptionText.SendKeys(ExcelLibHelpers.ReadData(2, "Edit Description"));
+            
             //click on  Save button 
-            driver.FindElement(By.XPath(".//button[@type='button']")).Click();
+            SaveButton.Click();
 
         }
 
@@ -75,10 +103,13 @@ namespace InternProject3.pages.Profile
         {
             //Populate ExcelLibHelper
             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileDescription");
+           
             //Get value from excel
             string ExpectedValue = ExcelLibHelpers.ReadData(2, "Edit Description");
+            
             //Get the text from Description text field
-            String ActualValue = driver.FindElement(By.Name("value")).Text;
+            String ActualValue = DescriptionText.Text;
+            
             //Compair Excel text and Description text 
             try
             {

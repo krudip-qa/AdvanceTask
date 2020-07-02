@@ -15,69 +15,111 @@ namespace InternProject3.pages
     {
         private readonly IWebDriver _driver;
 
+        int i;
+        int j;
+
         //Constructor for dependency injection
         public ShareSkill(IWebDriver driver)
         {
             _driver = driver;
         }
 
+        #region   Initialise WebElement of Share skill
+
+        //Click on Share SKill tab
+        protected IWebElement ShareSkillTab=>  _driver.FindElement(By.LinkText("Share Skill"));
+
+        //Click on Manageliting Tab
+        protected IWebElement ManageListinTab => _driver.FindElement(By.LinkText("Manage Listings"));
+        //Enter details 
+        protected IWebElement TitleTextBox => _driver.FindElement(By.Name("title"));
+        protected IWebElement DescriptionTextBox => _driver.FindElement(By.Name("description"));
+        protected IWebElement CategoryDropDown => _driver.FindElement(By.Name("categoryId"));
+        protected IWebElement SubCategory => _driver.FindElement(By.Name("subcategoryId"));
+        protected IWebElement Tag => _driver.FindElement(By.XPath("//*[@id='service-listing-section']/div[2]/div/form/div[4]/div[2]/div[1]/div/div/div/input"));
+        protected IWebElement ServiceType => _driver.FindElement(By.XPath("//*[@id='service-listing-section']/div[2]/div/form/div[5]/div[2]/div[1]/div[1]/div"));
+        protected IWebElement LocationType => _driver.FindElement(By.XPath("//*[@id='service-listing-section']/div[2]/div/form/div[6]/div[2]/div/div[2]/div/input"));
+        protected IWebElement StartDate => _driver.FindElement(By.Name("startDate"));
+        protected IWebElement EndDate => _driver.FindElement(By.Name("endDate"));
+        protected IWebElement StartTime => _driver.FindElement(By.XPath("//div[" + i + "]/div[2]/input"));
+        protected IWebElement EndTime => _driver.FindElement(By.XPath("//div[" + j + "]/div[3]/input"));
+        protected IWebElement SkillTrade => _driver.FindElement(By.XPath(".//*[@name='skillTrades' and @value='true']"));
+        protected IWebElement SkillExchange => _driver.FindElement(By.XPath("//div[@class='form-wrapper']//input[@placeholder='Add new tag']"));
+        protected IWebElement WorkSampleIcon => _driver.FindElement(By.XPath(".//*[@class='ui grid']/span/i"));
+        protected IWebElement Active => _driver.FindElement(By.XPath("//form/div[10]/div[@class='twelve wide column']/div/div[@class = 'field']/div[1]/input[@value='true']"));
+        protected IWebElement SaveButton => _driver.FindElement(By.XPath(".//*[@value='Save' and @type='button']"));
+
+        //Validate Added services 
+        protected IWebElement GetCategoryfromManageListing => _driver.FindElement(By.XPath(".//table[@class='ui striped table']/tbody/tr[1]/td[2]"));
+        protected IWebElement GetTitlefromManageListing => _driver.FindElement(By.XPath(".//table[@class='ui striped table']/tbody/tr[1]/td[3]"));
+       
+
+        #endregion
+
+        //Click on Share skill Tab
+        public void ClickShareskill(IWebDriver driver)
+        {
+            //wait untill driver find share skill tab
+            Sync.WaitforVisibility(_driver, "LinkText", "Share Skill", 10);
+            //Click on share skill tab
+            ShareSkillTab.Click();
+        }
         //Enter share skill details 
         public void EnterShareSkill(IWebDriver driver)
         {
             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "AddShareskill");
-           //wait
+            //wait
             Sync.WaitforVisibility(driver, "Name", "title", 10);
             //find Out Title textField
-            driver.FindElement(By.Name("title")).SendKeys(ExcelLibHelpers.ReadData(2, "Title"));
+            TitleTextBox.SendKeys(ExcelLibHelpers.ReadData(2, "Title"));
           
             //find Out Description  textField
-            driver.FindElement(By.Name("description")).SendKeys(ExcelLibHelpers.ReadData(2, "Description"));
+            DescriptionTextBox.SendKeys(ExcelLibHelpers.ReadData(2, "Description"));
 
             //find Out Category droupdown
-            driver.FindElement(By.Name("categoryId")).SendKeys(ExcelLibHelpers.ReadData(2, "Category"));
+            CategoryDropDown.SendKeys(ExcelLibHelpers.ReadData(2, "Category"));
 
             //find Out  Sub Category droupdown 
-            driver.FindElement(By.Name("subcategoryId")).SendKeys(ExcelLibHelpers.ReadData(2, "Sub Category"));
+            SubCategory.SendKeys(ExcelLibHelpers.ReadData(2, "Sub Category"));
 
             //find Out  Tag 
-            driver.FindElement(By.XPath("//*[@id='service-listing-section']/div[2]/div/form/div[4]/div[2]/div[1]/div/div/div/input")).SendKeys(ExcelLibHelpers.ReadData(2, "Tag") + Keys.Enter);
+            Tag.SendKeys(ExcelLibHelpers.ReadData(2, "Tag") + Keys.Enter);
 
             //find Out  Service Type - Radio Button
-            driver.FindElement(By.XPath("//*[@id='service-listing-section']/div[2]/div/form/div[5]/div[2]/div[1]/div[1]/div")).Click();
+            ServiceType.Click();
 
             //find Out  Location Type - Radio Button
-            driver.FindElement(By.XPath("//*[@id='service-listing-section']/div[2]/div/form/div[6]/div[2]/div/div[2]/div/input")).Click();
+            LocationType.Click();
 
-             //Available Days table
-             //Click on Start Date DropDown 
-            driver.FindElement(By.Name("startDate")).SendKeys(ExcelLibHelpers.ReadData(2, "Start Date"));
+            //Available Days table
+            //Click on Start Date DropDown 
+            StartDate.SendKeys(ExcelLibHelpers.ReadData(2, "Start Date"));
 
             //Click on End Date DropDown 
-            driver.FindElement(By.Name("endDate")).SendKeys(ExcelLibHelpers.ReadData(2, "End Date"));
+            EndDate.SendKeys(ExcelLibHelpers.ReadData(2, "End Date"));
 
             //Loop for Start time and End time table
-            for (int i = 2; i < 9; i++)
+            for (i = 2; i < 9; i++)
             {
-                //Click on Start Date DropDown 
-                driver.FindElement(By.XPath("//div[" + i + "]/div[2]/input")).SendKeys(ExcelLibHelpers.ReadData(i, "Start Time"));
+                //Click on Start Time DropDown 
+                StartTime.SendKeys(ExcelLibHelpers.ReadData(i, "Start Time"));
 
-                for (int j = 2; j < 9; j++)
+                for (j = 2; j < 9; j++)
                 {
-                    //Click on End Date DropDown 
-                    driver.FindElement(By.XPath("//div[" + j + "]/div[3]/input")).SendKeys(ExcelLibHelpers.ReadData(j, "End Time"));
+                    //Click on End TIme DropDown 
+                    EndTime.SendKeys(ExcelLibHelpers.ReadData(j, "End Time"));
                 }
                 
-            }                   
+            }
 
             //find Out Skill Trade radio button
-            driver.FindElement(By.XPath(".//*[@name='skillTrades' and @value='true']")).Click();
+            SkillTrade.Click();
 
             //Find out Skill Exchange Text-Field
-            driver.FindElement(By.XPath("//div[@cl" +
-            "ass='form-wrapper']//input[@placeholder='Add new tag']")).SendKeys(ExcelLibHelpers.ReadData(2, "Skill Exchange") + Keys.Enter);
+            SkillExchange.SendKeys(ExcelLibHelpers.ReadData(2, "Skill Exchange") + Keys.Enter);
 
             //Find Out + "Work Sample" button to upload file
-            driver.FindElement(By.XPath(".//*[@class='ui grid']/span/i")).Click();
+            WorkSampleIcon.Click();
 
             //Handle the window that not belongs to Browser -AutoIt - see blog for more info
             //below line execute the AutoIT script
@@ -96,10 +138,10 @@ namespace InternProject3.pages
             //driver.FindElement(By.Id("selectFile")).Click();
 
             //Find Out Active radio button 
-            driver.FindElement(By.XPath("//form/div[10]/div[@class='twelve wide column']/div/div[@class = 'field']/div[1]/input[@value='true']")).Click();
+            Active.Click();
 
             //find SAVE button-
-            driver.FindElement(By.XPath(".//*[@value='Save' and @type='button']")).Click();
+            SaveButton.Click();
       
         }
 
@@ -111,16 +153,22 @@ namespace InternProject3.pages
             Sync.WaitforVisibility(driver, "LinkText", "Manage Listings", 20);
             //For Assertion - After click on save button skill saved in manage list page
             //need to go Manage Listing Tab first and get category and titlt text 
-
-            //Click on manage listing TAb
-            driver.FindElement(By.LinkText("Manage Listings")).Click();
+            try
+            {
+                //Click on manage listing TAb
+                ManageListinTab.Click();
+            }
+            catch(NoSuchElementException e)
+            {
+                Console.WriteLine(e);
+            }
 
             Sync.WaitforVisibility(driver, "XPath", ".//table[@class='ui striped table']/tbody/tr[1]/td[2]", 20);
             //Get Category of Manage List
-            String ManageListCategory = driver.FindElement(By.XPath(".//table[@class='ui striped table']/tbody/tr[1]/td[2]")).Text;
+            String ManageListCategory = GetCategoryfromManageListing.Text;
 
             //Get title of Manage List
-            String ManageTitle = driver.FindElement(By.XPath(".//table[@class='ui striped table']/tbody/tr[1]/td[3]")).Text;
+            String ManageTitle = GetTitlefromManageListing.Text;
 
             try
             {
@@ -142,58 +190,55 @@ namespace InternProject3.pages
             //wait
             Sync.WaitforVisibility(driver, "Name", "title", 10);
             //find Out Title textField
-            driver.FindElement(By.Name("title")).SendKeys(ExcelLibHelpers.ReadData(2, "Title"));
+            TitleTextBox.SendKeys(ExcelLibHelpers.ReadData(2, "Title"));
            
             //find Out Description  textField
-            driver.FindElement(By.Name("description")).SendKeys(ExcelLibHelpers.ReadData(2, "Description"));
+            DescriptionTextBox.SendKeys(ExcelLibHelpers.ReadData(2, "Description"));
 
             //find Out Category droupdown
-            driver.FindElement(By.Name("categoryId")).SendKeys(ExcelLibHelpers.ReadData(2, "Category"));
+            CategoryDropDown.SendKeys(ExcelLibHelpers.ReadData(2, "Category"));
 
             //find Out  Sub Category droupdown 
-            driver.FindElement(By.Name("subcategoryId")).SendKeys(ExcelLibHelpers.ReadData(2, "Sub Category"));
+            SubCategory.SendKeys(ExcelLibHelpers.ReadData(2, "Sub Category"));
 
             //find Out  Tag 
-            driver.FindElement(By.XPath("//*[@id='service-listing-section']/div[2]/div/form/div[4]/div[2]/div[1]/div/div/div/input"))
-                .SendKeys(ExcelLibHelpers.ReadData(2, "Tag") + Keys.Enter + ExcelLibHelpers.ReadData(3, "Tag") + Keys.Enter);
+             Tag.SendKeys(ExcelLibHelpers.ReadData(2, "Tag") + Keys.Enter + ExcelLibHelpers.ReadData(3, "Tag") + Keys.Enter);
 
             //find Out  Service Type - Radio Button
-            driver.FindElement(By.XPath("//*[@id='service-listing-section']/div[2]/div/form/div[5]/div[2]/div[1]/div[1]/div")).Click();
+            ServiceType.Click();
 
             //find Out  Location Type - Radio Button
-            driver.FindElement(By.XPath("//*[@id='service-listing-section']/div[2]/div/form/div[6]/div[2]/div/div[2]/div/input")).Click();
+            LocationType.Click();
 
             //Available Days table
             //Click on Start Date DropDown 
-            driver.FindElement(By.Name("startDate")).SendKeys(ExcelLibHelpers.ReadData(2, "Start Date"));
+            StartDate.SendKeys(ExcelLibHelpers.ReadData(2, "Start Date"));
 
             //Click on End Date DropDown 
-            driver.FindElement(By.Name("endDate")).SendKeys(ExcelLibHelpers.ReadData(2, "End Date"));
+            EndDate.SendKeys(ExcelLibHelpers.ReadData(2, "End Date"));
 
             //Loop for Start time and End time table
-            for (int i = 2; i < 9; i++)
+            for (i = 2; i < 9; i++)
             {
                 //Click on Start Date DropDown 
-                driver.FindElement(By.XPath("//div[" + i + "]/div[2]/input")).SendKeys(ExcelLibHelpers.ReadData(i, "Start Time"));
+                StartTime.SendKeys(ExcelLibHelpers.ReadData(i, "Start Time"));
 
-                for (int j = 2; j < 9; j++)
+                for (j = 2; j < 9; j++)
                 {
                     //Click on End Date DropDown 
-                    driver.FindElement(By.XPath("//div[" + j + "]/div[3]/input")).SendKeys(ExcelLibHelpers.ReadData(j, "End Time"));
+                    EndTime.SendKeys(ExcelLibHelpers.ReadData(j, "End Time"));
                 }
 
             }
 
             //find Out Skill Trade radio button
-            driver.FindElement(By.XPath(".//*[@name='skillTrades' and @value='true']")).Click();
+            SkillTrade.Click();
 
             //Find out Skill Exchange Text-Field
-            driver.FindElement(By.XPath("//div[@cl" +
-            "ass='form-wrapper']//input[@placeholder='Add new tag']"))
-                .SendKeys(ExcelLibHelpers.ReadData(2, "Skill Exchange") + Keys.Enter + ExcelLibHelpers.ReadData(3, "Skill Exchange") + Keys.Enter);
+            SkillExchange.SendKeys(ExcelLibHelpers.ReadData(2, "Skill Exchange") + Keys.Enter + ExcelLibHelpers.ReadData(3, "Skill Exchange") + Keys.Enter);
 
             //Find Out + "Work Sample" button to upload file
-            driver.FindElement(By.XPath(".//*[@class='ui grid']/span/i")).Click();
+            WorkSampleIcon.Click();
 
             //Handle the window that not belongs to Browser -AutoIt - see blog for more info
             //below line execute the AutoIT script
@@ -212,10 +257,10 @@ namespace InternProject3.pages
             //driver.FindElement(By.Id("selectFile")).Click();
 
             //Find Out Active radio button 
-            driver.FindElement(By.XPath("//form/div[10]/div[@class='twelve wide column']/div/div[@class = 'field']/div[1]/input[@value='true']")).Click();
+            Active.Click();
 
             //find SAVE button-
-            driver.FindElement(By.XPath(".//*[@value='Save' and @type='button']")).Click();
+            SaveButton.Click();
 
         }
 
@@ -229,14 +274,14 @@ namespace InternProject3.pages
             //need to go Manage Listing Tab first and get category and titlt text 
 
             //Click on manage listing Tab
-            driver.FindElement(By.LinkText("Manage Listings")).Click();
+            ManageListinTab.Click();
 
             Sync.WaitforVisibility(driver, "XPath", ".//table[@class='ui striped table']/tbody/tr[1]/td[2]", 10);
             //Get Category of Manage List
-            String ManageListCategory = driver.FindElement(By.XPath(".//table[@class='ui striped table']/tbody/tr[1]/td[2]")).Text;
+            String ManageListCategory = GetCategoryfromManageListing.Text;
 
             //Get title of Manage List
-            String ManageTitle = driver.FindElement(By.XPath(".//table[@class='ui striped table']/tbody/tr[1]/td[3]")).Text;
+            String ManageTitle = GetTitlefromManageListing.Text;
 
             try
             {

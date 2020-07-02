@@ -19,51 +19,89 @@ namespace InternProject3.pages.Profile
         {
             _driver = driver;
         }
+
+        #region  Initialise Skill WebElements
+        //Click on Skill Tab
+        protected IWebElement SkillTab => _driver.FindElement(By.XPath(".//a[@data-tab='second']"));
+       
+        //Add Skill
+        protected IWebElement AddNewButton => _driver.FindElement(By.XPath("//div[3]/div/div[2]/div/table/thead/tr/th[3]/div"));
+        
+        //Enter valid details
+        protected IWebElement SkillTextBox => _driver.FindElement(By.XPath(".//*[@placeholder='Add Skill']"));
+        protected IWebElement SkillLevel => _driver.FindElement(By.XPath("//div[3]/form/div[3]/div/div[2]/div/div/div[2]/select"));
+        protected IWebElement AddButton => _driver.FindElement(By.XPath("//div[3]/div/div[2]/div/div/span/input[1]"));
+       
+        //Validate 
+        protected IWebElement GetSkillfromList => _driver.FindElement(By.XPath("//*[@data-tab='second']/div/div[2]/div/table/tbody[last()]/tr/td[1]"));
+
+        //Edit Skill
+        protected IWebElement SkillEditIcon => _driver.FindElement(By.XPath(".//*[@data-tab='second']/div/div[2]/div/table/tbody[last()]/tr/td/span[1]/i"));
+        protected IWebElement UpdateSkillLevel => _driver.FindElement(By.XPath("//*[@data-tab='second']/div/div[2]/div/table/tbody[last()]/tr/td/div/div[2]/select"));
+        protected IWebElement UpdateButton => _driver.FindElement(By.XPath("//*[@data-tab='second']/div/div[2]/div/table/tbody/tr/td/div/span/input[1]"));
+
+        //Delete Skill
+        protected IWebElement DeleteButton => _driver.FindElement(By.XPath("//*[@data-tab='second']/div/div[2]/div/table/tbody[last()]/tr/td/span[2]"));
+        protected IWebElement PopUpMessage => _driver.FindElement(By.ClassName("ns-box-inner"));
+        protected IWebElement PopUpClose => _driver.FindElement(By.ClassName("ns-close"));
+        #endregion
+
+        //Click on Skill Tab
+        public void ClickSkillTab(IWebDriver driver)
+        {
+            //Wait untill driver find Skill button
+            Sync.WaitforVisibility(driver, "XPath", ".//a[@data-tab='second']", 10);
+            //click on a Skill Tab
+            SkillTab.Click();
+        }
         public void AddSkill(IWebDriver driver)
         {
             //Populate ExcelLibHelper
             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileSkill");
-            //Wait untill driver find Skill button
-            Sync.WaitforVisibility(driver, "XPath", ".//a[@data-tab='second']", 10);
-            //click on a Skill Tab
-            driver.FindElement(By.XPath(".//a[@data-tab='second']")).Click();
+
             //click on Add New Button
-            driver.FindElement(By.XPath("//div[3]/div/div[2]/div/table/thead/tr/th[3]/div")).Click();
+            AddNewButton.Click();
+           
             //give input in Add Skill TextField
-            driver.FindElement(By.XPath(".//*[@placeholder='Add Skill']")).SendKeys(ExcelLibHelpers.ReadData(2, "Skill Name"));
+            SkillTextBox.SendKeys(ExcelLibHelpers.ReadData(2, "Skill Name"));
+            
             //print the name of added skill from excel
             Console.WriteLine(ExcelLibHelpers.ReadData(2, "Skill Name"));
+
             //choose Skill Level from drop-down Box
-            driver.FindElement(By.XPath("//div[3]/form/div[3]/div/div[2]/div/div/div[2]/select")).Click();
+            UpdateSkillLevel.Click();
+            
             //Save the dropdown WebElement into webElement variable
-            IWebElement SkillDropDown = driver.FindElement(By.XPath("//div[3]/form/div[3]/div/div[2]/div/div/div[2]/select"));
-            //List all the Available Options in DropDown
-            IList<IWebElement> SkillLevelList = SkillDropDown.FindElements(By.TagName("option"));
+           //List all the Available Options in DropDown
+            IList<IWebElement> SkillLevelList = UpdateSkillLevel.FindElements(By.TagName("option"));
+            
             //Count the total number of Options available in list 
             int Count = SkillLevelList.Count();
             Boolean result = true;
-           try
+           
+            try
             {            
-             //Use For loop to iterate and match level with ExcelSheet
-             for(int i = 0; i <= Count; i++)
-             {
-                Console.WriteLine(SkillLevelList[i].Text);
-                if (SkillLevelList[i].Text == ExcelLibHelpers.ReadData(2, "Skill Level"))
-                {
-                   //Click on Skill Level 
-                   SkillLevelList[i].Click();
-                   Console.WriteLine("Level been selected");
-                   _ = result;
-                   break;
-                }
-             }
-           }
-           catch(Exception e)
-           {
-              Console.WriteLine(e.Message);
-           }
+                 //Use For loop to iterate and match level with ExcelSheet
+                 for(int i = 0; i <= Count; i++)
+                 {
+                    Console.WriteLine(SkillLevelList[i].Text);
+                    if (SkillLevelList[i].Text == ExcelLibHelpers.ReadData(2, "Skill Level"))
+                    {
+                        //Click on Skill Level 
+                        SkillLevelList[i].Click();
+                        Console.WriteLine("Level been selected");
+                        _ = result;
+                        break;
+                    }
+                 }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
             //click on Add Button 
-            driver.FindElement(By.XPath("//div[3]/div/div[2]/div/div/span/input[1]")).Click();
+            AddButton.Click();
             
         }
 
@@ -71,10 +109,13 @@ namespace InternProject3.pages.Profile
         public void ValidateAddSkill(IWebDriver driver)
         {
             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileSkill");
-            //Entered Skill is
+            
+            //Entered Skill from Excel is
             string AddedSkill = ExcelLibHelpers.ReadData(2, "Skill Name");
+            
             //Get the skill from skill list
-           string listedSkill = driver.FindElement(By.XPath("//*[@data-tab='second']/div/div[2]/div/table/tbody[last()]/tr/td[1]")).Text;
+            string listedSkill = GetSkillfromList.Text;
+            
             //Added skill should be in list 
             try
             {
@@ -90,26 +131,19 @@ namespace InternProject3.pages.Profile
         //Update Skill
         public void EditSkill(IWebDriver driver)
         {
-            Sync.WaitforVisibility(driver, "XPath", ".//a[@data-tab='second']", 10);
-            //click on a Skill Tab to Edit Skill
-            driver.FindElement(By.XPath(".//a[@data-tab='second']")).Click();
             //click on pen button to edit Skill textbox and droupdown box
-            driver.FindElement
-                (By.XPath(".//*[@data-tab='second']/div/div[2]/div/table/tbody[last()]/tr/td/span[1]/i")).Click();
+            SkillEditIcon.Click();
             //update the skill into text feild
-            driver.FindElement(By.XPath(".//input[@placeholder='Add Skill']")).Clear();
+            SkillTextBox.Clear();
             //populate Login Page Test data collection
             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileSkill");
             //write updated skill in here
-            driver.FindElement(By.XPath(".//input[@placeholder='Add Skill']")).SendKeys(ExcelLibHelpers.ReadData(2, "Edit Skill"));
+            SkillTextBox.SendKeys(ExcelLibHelpers.ReadData(2, "Edit Skill"));
             //choose Skill Level from drop-down Box
-            driver.FindElement
-                (By.XPath("//*[@data-tab='second']/div/div[2]/div/table/tbody[last()]/tr/td/div/div[2]/select")).Click();
-            driver.FindElement
-                (By.XPath("//*[@data-tab='second']/div/div[2]/div/table/tbody[last()]/tr/td/div/div[2]/select")).
-                SendKeys(ExcelLibHelpers.ReadData(2, "Level of Skill"));
+            SkillLevel.Click();
+            SkillLevel.SendKeys(ExcelLibHelpers.ReadData(2, "Level of Skill"));
             //click on Update button 
-            driver.FindElement(By.XPath("//*[@data-tab='second']/div/div[2]/div/table/tbody/tr/td/div/span/input[1]")).Click();
+            UpdateButton.Click();
         }
 
         //Validate Updated skill
@@ -119,7 +153,7 @@ namespace InternProject3.pages.Profile
             //Updated skill is
             String UpdatedSkill = ExcelLibHelpers.ReadData(2, "Edit Skill");
             //Get the text from Skill list 
-            string ListedSkill = driver.FindElement(By.XPath(".//*[@data-tab='second']/div/div[2]/div/table/tbody[last()]/tr/td[1]")).Text;
+            string ListedSkill = GetSkillfromList.Text;
             //For validation UpdatedSkill and ListedSkill has to be same 
             try
             {
@@ -135,15 +169,11 @@ namespace InternProject3.pages.Profile
 
         //Delete Skill
         public void DeleteSkill(IWebDriver driver)
-        {
-            Thread.Sleep(2000);
-            //click on a Skill Tab
-            driver.FindElement(By.XPath(".//a[@data-tab='second']")).Click();
+        {            
             try
             {            
                 //Click on Delete button
-                driver.FindElement
-                (By.XPath("//*[@data-tab='second']/div/div[2]/div/table/tbody[last()]/tr/td/span[2]")).Click();
+                DeleteButton.Click();
             }
             catch(NoSuchElementException e)
             {

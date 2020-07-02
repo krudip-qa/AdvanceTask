@@ -17,18 +17,14 @@ namespace InternProject3.Acceptence_Test.StepDefinition
             _driver = driver;
         }
 
-
         //SearchSkill calss
         SearchSkill SearchObj;
 
         [Given(@"I have entered skill in search Skill text box")]
         public void GivenIHaveEnteredSkillInSearchSkillTextBox()
         {
-            Sync.WaitforVisibility(_driver, "XPath", "//*[@placeholder='Search skills']", 20);
-            //populate excel 
-            ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "SearchSkill");
-            // Enter skill to search
-            _driver.FindElement(By.XPath("//*[@placeholder='Search skills']")).SendKeys(ExcelLibHelpers.ReadData(2, "Search Skill") + Keys.Enter);
+            SearchObj = new SearchSkill(_driver);
+            SearchObj.SkilltoSearch(_driver);
         }
         
         [When(@"I search skill by category and search user")]

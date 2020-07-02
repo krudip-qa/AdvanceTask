@@ -19,26 +19,63 @@ namespace InternProject3.pages.Profile
         {
             _driver = driver;
         }
+
+        #region Initialise Language WebElements
+        
+        //Click on LanguageTab
+        protected IWebElement LanguageTab => _driver.FindElement(By.XPath(".//a[@data-tab='first']"));
+        //Add Language
+        protected IWebElement AddNewButton => _driver.FindElement(By.XPath("//div[2]/div/div[2]/div/table/thead/tr/th[3]/div"));
+        
+        //Provide valid details
+        protected IWebElement LanguageTextBox => _driver.FindElement(By.XPath(".//input[@placeholder='Add Language']"));
+        protected IWebElement LanguageDropDown => _driver.FindElement(By.Name("level"));
+        protected IWebElement AddLanguagedetailsButton  => _driver.FindElement(By.XPath(".//*[@value='Add']"));
+        
+        //Validate Add language
+        protected IWebElement GetLanguagefromList  => _driver.FindElement(By.XPath("//div[2]/div/div[2]/div/table/tbody[last()]/tr/td[1]"));
+
+        //Edit language
+        protected IWebElement EditIcon => _driver.FindElement(By.XPath("//*[@data-tab='first']/div/div[2]/div/table/tbody[1]/tr/td/span[1]/i[1]"));
+        protected IWebElement UpdateButton => _driver.FindElement(By.XPath(".//*[@colspan='3']/div/span/input[1]"));
+        protected IWebElement UpdatedLanguagefromList => _driver.FindElement(By.XPath("//div[2]/div/div[2]/div/table/tbody[1]/tr/td[1]"));
+
+        //Delete Language
+        protected IWebElement DeleteButton => _driver.FindElement(By.XPath("//*[@data-tab='first']/div/div[2]/div/table/tbody[1]/tr/td/span[2]/i[1]"));
+        protected IWebElement PopUpMessage => _driver.FindElement(By.ClassName("ns-box-inner"));
+        protected IWebElement PopUpClose => _driver.FindElement(By.ClassName("ns-close"));
+        #endregion
+
+        //Click on LanguageTab
+        public void ClickLanguageTab(IWebDriver driver)
+        {
+            Sync.WaitforVisibility(_driver, "XPath", ".//a[@data-tab='first']", 10);
+            //click on Language tab
+            LanguageTab.Click();
+        }
+        
         //Add language
         public void AddLanguage(IWebDriver driver)
         {
             //Populate ExcelLibHelper
             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileLanguage");
-            
-            //click on Language tab
-            driver.FindElement(By.XPath(".//a[@data-tab='first']")).Click();
+                      
             Thread.Sleep(2000);
+            
             //click on Add New button 
-            driver.FindElement(By.XPath("//div[2]/div/div[2]/div/table/thead/tr/th[3]/div")).Click();
+            AddNewButton.Click();
+            
             //write language into Add Language Textbox
-            driver.FindElement(By.XPath(".//input[@placeholder='Add Language']")).SendKeys(ExcelLibHelpers.ReadData(2, "Language"));
+            LanguageTextBox.SendKeys(ExcelLibHelpers.ReadData(2, "Language"));
+            
             //Save WebElement of DropDown into WebElement variable
-            IWebElement LanguageDropDown = driver.FindElement(By.Name("level"));
             //List all the Available Options from Language DropDown
             IList<IWebElement> LanguageDopDownList = LanguageDropDown.FindElements(By.TagName("option"));
+            
             //Count the totle number of options available in DropDown
             int Count = LanguageDopDownList.Count();
             Boolean result = true;
+            
             try
             {
                 //Use loop to iterate List and match options with ExcelSheet
@@ -58,9 +95,9 @@ namespace InternProject3.pages.Profile
             {
                 Console.WriteLine(e.Message);
             }
-           
+
             //click on Add button
-            driver.FindElement(By.XPath(".//*[@value='Add']")).Click();
+            AddLanguagedetailsButton.Click();
         }
 
         //Validate Added language in list
@@ -71,7 +108,7 @@ namespace InternProject3.pages.Profile
             String expextedValue = ExcelLibHelpers.ReadData(2, "Language");
             Sync.WaitforVisibility(driver, "XPath", "//div[2]/div/div[2]/div/table/tbody[last()]/tr/td[1]", 10);
             //Get the text value from language list
-            String actualValue = driver.FindElement(By.XPath("//div[2]/div/div[2]/div/table/tbody[last()]/tr/td[1]")).Text;
+            String actualValue = GetLanguagefromList.Text;
             try
             {
                 //Compair expect and actual value 
@@ -98,7 +135,7 @@ namespace InternProject3.pages.Profile
             try
             {
                 //Click on pen button to edit details 
-                driver.FindElement(By.XPath("//*[@data-tab='first']/div/div[2]/div/table/tbody[1]/tr/td/span[1]/i[1]")).Click();
+                EditIcon.Click();
             }
             catch(NoSuchElementException e)
             {
@@ -106,27 +143,33 @@ namespace InternProject3.pages.Profile
             }
            
              //click on Add Language textField and clear textbox
-            driver.FindElement(By.XPath(".//td[@colspan='3']/div/div/input")).Clear();
-            //populate Login Page Test data collection
-            ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileLanguage");
-            //Enter Language
-            driver.FindElement(By.XPath(".//td[@colspan='3']/div/div/input")).SendKeys(ExcelLibHelpers.ReadData(2, "Edit Language"));
-            //Select Level of language
-            IWebElement DropdownEditLangList = driver.FindElement(By.Name("level"));
-            DropdownEditLangList.SendKeys(ExcelLibHelpers.ReadData(2, "Level of Language") + Keys.Enter);
-            //Click on Update button
-            driver.FindElement(By.XPath(".//*[@colspan='3']/div/span/input[1]")).Click();
+             LanguageTextBox.Clear();
+           
+             //populate Login Page Test data collection
+             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileLanguage");
+            
+             //Enter Language
+             LanguageTextBox.SendKeys(ExcelLibHelpers.ReadData(2, "Edit Language"));
+             
+             //Select Level of language
+             LanguageDropDown.SendKeys(ExcelLibHelpers.ReadData(2, "Level of Language") + Keys.Enter);
+            
+             //Click on Update button
+             UpdateButton.Click();
         }
 
         //Validate Language been updated in list
         public void ValidateEditLanguage(IWebDriver driver)
         {
             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileLanguage");
+           
             //Edited language is
             String expextedValue = ExcelLibHelpers.ReadData(2, "Edit Language");
+            
             Sync.WaitforVisibility(driver, "XPath", "//div[2]/div/div[2]/div/table/tbody[1]/tr/td[1]", 10);
+            
             //Get the text value from language list
-            String actualValue = driver.FindElement(By.XPath("//div[2]/div/div[2]/div/table/tbody[1]/tr/td[1]")).Text;
+            String actualValue = UpdatedLanguagefromList.Text;
 
             try
             {
@@ -150,11 +193,11 @@ namespace InternProject3.pages.Profile
         public void DeleteLanguage(IWebDriver driver)
         {           
             //Get name of language to be delete
-            String Language = driver.FindElement(By.XPath("//div[2]/div/div[2]/div/table/tbody[1]/tr/td[1]")).Text;
+            String Language = UpdatedLanguagefromList.Text;
             try
             {
-                 //click on X button to delete
-                driver.FindElement(By.XPath("//*[@data-tab='first']/div/div[2]/div/table/tbody[1]/tr/td/span[2]/i[1]")).Click();
+                //click on X button to delete
+                DeleteButton.Click();
             }
             catch(NoSuchElementException e)
             {

@@ -79,7 +79,7 @@ namespace InternProject3
             scenario = featureName.CreateNode<Scenario>(scenarioContext.ScenarioInfo.Title);
 
             //create an Page object for SignIn Page 
-            SignIn logInObj = new SignIn();
+            SignIn logInObj = new SignIn(_driver);
             logInObj.SignInSteps(_driver);
 
         }

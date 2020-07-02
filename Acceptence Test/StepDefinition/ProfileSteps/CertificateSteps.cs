@@ -23,10 +23,8 @@ namespace InternProject3.Acceptence_Test.StepDefinition.ProfileSteps
         [Given(@"I should click on certificate tab under profile")]
         public void GivenIShouldClickOnCertificateTabUnderProfile()
         {
-            //wait
-            Sync.WaitforVisibility(_driver, "XPath", ".//a[@data-tab='fourth']", 10);
-            //click on Certificate Tab
-            _driver.FindElement(By.XPath(".//a[@data-tab='fourth']")).Click();
+            CertyObj = new Certificate(_driver);
+            CertyObj.Certificatetab(_driver);
         }
         
         [When(@"I add Certidicate")]

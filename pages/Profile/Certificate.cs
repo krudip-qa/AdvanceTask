@@ -19,29 +19,62 @@ namespace InternProject3.pages.Profile
         {
             _driver = driver;
         }
+        #region Initialise Certificate WebElements
+        //Click on Certificate tab
+        protected IWebElement CertificateTab => _driver.FindElement(By.XPath(".//a[@data-tab='fourth']"));
+      
+        // Click Add Certificate Btn
+        protected IWebElement AddNewCertificateBtn => _driver.FindElement(By.XPath("//*[@id='account-profile-section']/div/section[2]/div/div/div/div[3]/form/div[5]/div[1]/div[2]/div/table/thead/tr/th[4]/div"));
+      
+        //Add Valid inputes in fields
+        protected IWebElement CertificateTextfield => _driver.FindElement(By.Name("certificationName"));
+        protected IWebElement CertificateFromTextfield => _driver.FindElement(By.Name("certificationFrom"));
+        protected IWebElement DropdownCertyYearList => _driver.FindElement(By.Name("certificationYear")); 
+        protected IWebElement AddCertificateBtn => _driver.FindElement(By.XPath("//*[@id='account-profile-section']/div/section[2]/div/div/div/div[3]/form/div[5]/div[1]/div[2]/div/div/div[3]/input[1]"));
+      
+        //validate Add certificate
+        protected IWebElement CertificateFromList => _driver.FindElement(By.XPath("//div[5]/div/div[2]/div/table/tbody[last()]/tr/td[1]"));
+       
+        //Edit Certificate
+        protected IWebElement EditBtn => _driver.FindElement(By.XPath("//*[@data-tab='fourth']/div/div[2]/div/table/tbody[last()]/tr/td/span[1]/i[1]"));
+        protected IWebElement UpdateButton => _driver.FindElement(By.XPath(".//*[@colspan='4']/div/span/input[1]"));
+       
+        //Delete certificate
+        protected IWebElement DeleteButton => _driver.FindElement(By.XPath("//*[@data-tab='fourth']/div/div[2]/div/table/tbody[last()]/tr/td/span[2]/i"));
+        protected IWebElement PopUpMessage => _driver.FindElement(By.ClassName("ns-box-inner"));
 
+        #endregion
+
+
+        //Click on Certificate tab
+        public void Certificatetab(IWebDriver driver)
+        {
+            //wait
+            Sync.WaitforVisibility(driver, "XPath", ".//a[@data-tab='fourth']", 10);
+            //click on Certificate Tab
+            driver.FindElement(By.XPath(".//a[@data-tab='fourth']")).Click();
+        }
+                     
         //Add Certificate
         public void ProfileAddCertificate(IWebDriver driver)
         {
             //Populate ExcelLibHelper
             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileCertificate");
-           ////wait
-           // Sync.WaitforVisibility(driver, "XPath", ".//a[@data-tab='fourth']", 10);
-           // //click on Certificate Tab
-           // driver.FindElement(By.XPath(".//a[@data-tab='fourth']")).Click();
+          
             //Click on Add New Button
-            driver.FindElement
-                (By.XPath("//*[@id='account-profile-section']/div/section[2]/div/div/div/div[3]/form/div[5]/div[1]/div[2]/div/table/thead/tr/th[4]/div"))
-                .Click();
+            AddNewCertificateBtn.Click();
+           
             //Give an input in Certificates or Awards
-            driver.FindElement(By.Name("certificationName")).SendKeys(ExcelLibHelpers.ReadData(2, "Certificate Name"));
+            CertificateTextfield.SendKeys(ExcelLibHelpers.ReadData(2, "Certificate Name"));
+            
             //Certificate From
-            driver.FindElement(By.Name("certificationFrom")).SendKeys(ExcelLibHelpers.ReadData(2,"Certificate From"));
+            CertificateFromTextfield.SendKeys(ExcelLibHelpers.ReadData(2,"Certificate From"));
+            
             //Select Year from Drop-Down List
-            IWebElement DropdownCertyYearList = driver.FindElement(By.Name("certificationYear"));
             DropdownCertyYearList.SendKeys(ExcelLibHelpers.ReadData(2, "certification Year") + Keys.Enter);
+            
             //Click on Add button
-            driver.FindElement(By.XPath("//*[@id='account-profile-section']/div/section[2]/div/div/div/div[3]/form/div[5]/div[1]/div[2]/div/div/div[3]/input[1]")).Click();
+            AddCertificateBtn.Click();
         }
 
         //Validate Added Certificate in List
@@ -54,7 +87,7 @@ namespace InternProject3.pages.Profile
             //wait for Certificate name
             Sync.WaitforVisibility(driver, "XPath", "//div[5]/div/div[2]/div/table/tbody[last()]/tr/td[1]", 10);
             //Get the certificate name value from certificate list
-            String actualCertificate = driver.FindElement(By.XPath("//div[5]/div/div[2]/div/table/tbody[last()]/tr/td[1]")).Text;
+            String actualCertificate = CertificateFromList.Text;
             try
             {                 
                 Assert.That(actualCertificate, Is.EqualTo(expextedCertificate));
@@ -73,7 +106,7 @@ namespace InternProject3.pages.Profile
             try
             {
                 //click on pen to edit details 
-                driver.FindElement(By.XPath("//*[@data-tab='fourth']/div/div[2]/div/table/tbody[last()]/tr/td/span[1]/i[1]")).Click();
+                EditBtn.Click();
             }
             catch(NoSuchElementException e)
             {
@@ -82,15 +115,15 @@ namespace InternProject3.pages.Profile
             //populate Login Page Test data collection
             ExcelLibHelpers.PopulateInCollection(MarsResource.ExcelPath, "ProfileCertificate");
             //Change the Crtificate name 
-            driver.FindElement(By.Name("certificationName")).Clear();
-            driver.FindElement(By.Name("certificationName")).SendKeys(ExcelLibHelpers.ReadData(2, "Edit certificationName"));
+            CertificateTextfield.Clear();
+            CertificateTextfield.SendKeys(ExcelLibHelpers.ReadData(2, "Edit certificationName"));
             //Change the name for Crtificate From TextField
-            driver.FindElement(By.Name("certificationFrom")).Clear();
-            driver.FindElement(By.Name("certificationFrom")).SendKeys(ExcelLibHelpers.ReadData(2, "Edit certificationFrom"));
+            CertificateFromTextfield.Clear();
+            CertificateFromTextfield.SendKeys(ExcelLibHelpers.ReadData(2, "Edit certificationFrom"));
             //Change the year 
-            driver.FindElement(By.Name("certificationYear")).SendKeys(ExcelLibHelpers.ReadData(2, "Edit certificationYear"));
+            DropdownCertyYearList.SendKeys(ExcelLibHelpers.ReadData(2, "Edit certificationYear"));
             //click on Update button
-            driver.FindElement(By.XPath(".//*[@colspan='4']/div/span/input[1]")).Click();
+            UpdateButton.Click();
         }
 
         //Validate edited details in Certificate list
@@ -105,7 +138,7 @@ namespace InternProject3.pages.Profile
             //Sync.WaitforVisibility(driver, "XPath", "//div[5]/div/div[2]/div/table/tbody[last()]/tr/td[1]", 50);
             Thread.Sleep(2000);
             //Get the certificate name from certificate list 
-            string actualCertificate = driver.FindElement(By.XPath("//div[5]/div/div[2]/div/table/tbody[last()]/tr/td[1]")).Text;
+            string actualCertificate = CertificateFromList.Text;
             //Assert that Excel value and Certificate name would be same 
             try
             {
@@ -129,7 +162,7 @@ namespace InternProject3.pages.Profile
             try
             {
                 //Click on Delete button
-                driver.FindElement(By.XPath("//*[@data-tab='fourth']/div/div[2]/div/table/tbody[last()]/tr/td/span[2]/i")).Click();
+                DeleteButton.Click();
             }
             catch (NoSuchElementException e)
             {
@@ -146,7 +179,7 @@ namespace InternProject3.pages.Profile
             Sync.WaitforVisibility(driver, "ClassName", "ns-box-inner", 20);
             //Get the text from pop up window 
             driver.SwitchTo().Window(driver.WindowHandles.Last());
-            string msglang = driver.FindElement(By.ClassName("ns-box-inner")).Text;
+            string msglang = PopUpMessage.Text;
             Console.WriteLine(msglang);
             driver.FindElement(By.ClassName("ns-close")).Click();
             driver.SwitchTo().DefaultContent();

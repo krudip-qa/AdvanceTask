@@ -19,15 +19,15 @@ namespace InternProject3.Acceptence_Test.StepDefinition
         {
             _driver = driver;
         }
+       
         //Call language class and define for all functions
         Language LangObj;
 
         [Given(@"I Click on Language tab under profile")] 
         public void GivenIClickOnLanguageTabUnderProfile()
         {
-            Sync.WaitforVisibility(_driver, "XPath", ".//a[@data-tab='first']", 10);
-            //click on Language tab
-            _driver.FindElement(By.XPath(".//a[@data-tab='first']")).Click();
+            LangObj = new Language(_driver);
+            LangObj.ClickLanguageTab(_driver);
         }
 
         [Given(@"I Add Language")]
